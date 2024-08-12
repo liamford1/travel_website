@@ -77,3 +77,45 @@ nav {
     font-size: 18px;
     color: white;
 }
+
+#recommendations {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.recommendation-item {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    width: calc(33.333% - 20px); 
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.recommendation-item:hover {
+    transform: scale(1.05);
+}
+
+.recommendation-item img {
+    width: 100%;
+    height: auto;
+}
+
+.recommendation-item .content {
+    padding: 15px;
+}
+
+.recommendation-item h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+.recommendation-item p {
+    margin-bottom: 0;
+    font-size: 1em;
+}
