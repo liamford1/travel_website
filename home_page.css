@@ -77,3 +77,29 @@ nav {
     font-size: 18px;
     color: black;
 }
+
+.about-content {
+    padding: 20px;
+    text-align: left;
+    background-color: none;
+    margin: 20px;
+    border-radius: 8px;
+}
+
+.about-content h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.about-content p {
+    font-size: 18px;
+    color: black;
+}
+
+.about-content h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: black;
+}
+
