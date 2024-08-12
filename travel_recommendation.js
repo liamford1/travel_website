@@ -1,47 +1,73 @@
-fetch('travel_recommendation_api.json')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error loading content');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
+document.addEventListener("DOMContentLoaded", function() {
+    const btnSearch = document.getElementById('btnSearch');
+    const btnReset = document.getElementById('btnReset');
+    const destinationInput = document.getElementById('destinationInput');
+    const recommendationsDiv = document.getElementById('recommendations');
+    
+    function fetchRecommendations(keyword) {
+        fetch('./travel_recommendation_api.json')
+            .then(response => response.json())
+            .then(data => {
+                const lowerKeyword = keyword.toLowerCase();
+                const filteredCountries = data.countries.filter(country => 
+                    country.cities.some(city => 
+                        city.name.toLowerCase().includes(lowerKeyword) ||
+                        city.description.toLowerCase().includes(lowerKeyword)
+                    )
+                );
 
-        const recommendationsDiv = document.getElementById('recommendations');
-
-        data.countries.forEach(country => {
-            const countryContainer = document.createElement('div');
-            countryContainer = countryContainer.classList.add('country');
-
-            const countryTitle = document.createElement('h2');
-            countryTitle.textContent = country.name;
-
-            countryContainer.appendChild(countryTitle);
-
-            country.cities.forEach(city => {
-                const cityContainer = document.createElement('div');
-                cityContainer = cityContainer.classList.add('city');
-
-                const img = document.createElement('img');
-                img.src = city.imageUrl;
-                img.alt = city.name;
-
-                const cityTitle = document.createElement('h3');
-                cityTitle.textContent = city.name;
-
-                const description = document.createElement('p');
-                description.textContent = city.description;
-
-                cityContainer.appendChild(img);
-                cityContainer.appendChild(cityTitle);
-                cityContainer.appendChild(description);
-
-                countryContainer.appendChild(cityContainer);
+                displayRecommendations(filteredCountries);
             })
-            recommendationsDiv.appendChild(countryContainer);
-        })
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+            .catch(error => console.error('Error fetching the recommendations:', error));
+    }
+
+    function displayRecommendations(countries) {
+        recommendationsDiv.innerHTML = ''; 
+
+        if (countries.length === 0) {
+            recommendationsDiv.innerHTML = '<p>No recommendations found.</p>';
+            return;
+        }
+
+        countries.forEach(country => {
+            country.cities.forEach(city => {
+                const cityName = city.name.toLowerCase();
+                const cityDescription = city.description.toLowerCase();
+                const lowerKeyword = destinationInput.value.toLowerCase();
+
+                if (cityName.includes(lowerKeyword) || cityDescription.includes(lowerKeyword)) {
+                    const articleDiv = document.createElement('div');
+                    articleDiv.classList.add('article');
+
+                    const title = document.createElement('h2');
+                    title.textContent = city.name;
+                    const description = document.createElement('p');
+                    description.textContent = city.description;
+                    const img = document.createElement('img');
+                    img.src = city.imageUrl;
+                    img.alt = city.name;
+
+                    articleDiv.appendChild(title);
+                    articleDiv.appendChild(description);
+                    articleDiv.appendChild(img);
+
+                    recommendationsDiv.appendChild(articleDiv);
+                }
+            });
+        });
+    }
+
+    btnSearch.addEventListener('click', function() {
+        const keyword = destinationInput.value.trim();
+        if (keyword) {
+            fetchRecommendations(keyword);
+        } else {
+            recommendationsDiv.innerHTML = '<p>Please enter a keyword to search.</p>';
+        }
     });
+
+    btnReset.addEventListener('click', function() {
+        destinationInput.value = '';
+        recommendationsDiv.innerHTML = '';
+    });
+});
